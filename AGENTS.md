@@ -116,6 +116,110 @@ git log --oneline --decorate -3
 
 看到类似 `HEAD -> main, origin/main` 时，说明当前提交已同步到 GitHub。
 
+## 项目流程
+
+当用户提出新功能、新产品想法、较大改动或需要完整开发闭环时，按下面流程推进。除非用户明确要求跳过，否则不要直接进入实现。
+
+标准流程：
+
+```text
+brainstorming
+-> office-hours
+-> writing-plans
+-> autoplan
+-> 如果 autoplan 提出修改，回到 writing-plans 修订
+-> executing-plans
+-> review
+-> qa
+-> ship
+```
+
+### 阶段职责
+
+- `brainstorming`：先理解项目上下文、用户目标、约束和成功标准；形成设计方向并等待用户批准。
+- `office-hours`：对想法做更高层的产品、用户、需求和取舍审视，避免一开始就把错误方向做深。
+- `writing-plans`：把已批准的设计写成可执行计划，保存到 `docs/superpowers/plans/`，并让每个任务可测试、可提交。
+- `autoplan`：对计划做自动评审，覆盖 CEO、设计、工程和 DX 视角；如果提出修改，必须回到 `writing-plans` 修订计划后再继续。
+- `executing-plans`：按计划执行，不在 `main` 上直接实现，优先使用隔离分支或 worktree；每个任务完成后运行对应验证并提交。
+- `review`：在准备落地前做预合并代码审查，检查 diff、风险、遗漏测试和文档同步问题。
+- `qa`：对可运行应用做用户视角 QA；发现可修复问题时按严重程度逐个修复、逐个提交、逐个复测。
+- `ship`：完成最终验证、版本/变更记录、推送和 PR 创建；不能绕过测试或 review 直接推送。
+
+### Git 配合点
+
+流程开始前：
+
+```powershell
+Get-Location
+git status --short --branch
+git remote -v
+git pull --rebase origin main
+```
+
+设计和计划阶段：
+
+- `brainstorming` 生成设计文档后，提交一次文档变更。
+- `writing-plans` 生成计划文档后，提交一次计划变更。
+- `autoplan` 修改计划时，计划文件必须重新提交。
+
+执行阶段：
+
+- 不要在 `main` 上直接实现功能，除非用户明确要求。
+- 为实现创建独立分支，分支名用简短英文描述，例如：
+
+```powershell
+git checkout -b feature/<short-name>
+```
+
+- 按计划任务小步提交，优先一项任务一个提交。
+- 每次提交前运行：
+
+```powershell
+git status --short
+```
+
+Review 和 QA 阶段：
+
+- `review` 前确认当前分支包含待审 diff，且工作区没有无关改动。
+- `qa` 修复 bug 时，一个 bug 一个提交，提交信息优先使用 `fix(qa): ...`。
+- QA 后必须重新运行项目验证命令。
+
+Ship 阶段：
+
+- `ship` 前必须有新鲜验证结果。
+- 推送前不要使用 force push。
+- 如果 GitHub 代理失败，优先使用临时绕过代理命令：
+
+```powershell
+git -c http.proxy= -c https.proxy= push origin <branch-name>
+```
+
+### 上下文压缩节点
+
+在长流程中，必须主动压缩上下文，避免后续执行阶段丢失关键决策或被旧上下文干扰。
+
+压缩时机：
+
+- 进入 `executing-plans` 前压缩一次上下文。
+- 进入 `qa` 前再压缩一次上下文。
+- 进入 `ship` 前再压缩一次上下文。
+
+每次压缩前，应确保以下内容已经落盘或能从 Git 恢复：
+
+- 当前目标和用户批准的设计。
+- 当前计划文件路径。
+- 当前分支名和远程地址。
+- 已完成和未完成任务。
+- 最新验证结果。
+- 任何用户明确偏好或禁止事项。
+
+如果当前环境没有显式“压缩上下文”工具，就用项目文件承载上下文，例如：
+
+- 更新对应的设计文档。
+- 更新对应的计划文档。
+- 在必要时创建或更新 `docs/superpowers/context/` 下的交接记录。
+- 提交这些上下文文件后再继续下一阶段。
+
 ## GitHub 网络与代理
 
 本机可能存在 Git 全局代理配置：

@@ -10,6 +10,29 @@
 - 一个项目对应一个独立文件夹和一个独立 Git 仓库。
 - 如果目录、远程仓库或分支看起来不匹配，停止并向用户确认。
 
+## 基础环境规则
+
+默认按以下本机环境理解和执行项目任务：
+
+- OS: Windows 11
+- GPU target: NVIDIA GeForce RTX 3050 Laptop GPU
+- 默认 Conda env: `D:\Python\newinstaller\Miniconda\envs\pytorch-weather`
+- Python: `3.11`
+
+涉及 Python、PyTorch、CUDA、GPU 推理或训练时，优先使用默认 Conda 环境中的 Python：
+
+```powershell
+& "D:\Python\newinstaller\Miniconda\envs\pytorch-weather\python.exe" --version
+```
+
+如果需要安装依赖，先确认当前任务确实属于 Python/GPU 工作流，再在该环境中安装；不要把依赖安装到系统 Python 或其他未知环境。
+
+涉及 GPU 能力判断时，先检查：
+
+```powershell
+nvidia-smi
+```
+
 ## 开工前检查
 
 每次开始改项目之前，先运行：

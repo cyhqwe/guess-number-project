@@ -1,5 +1,9 @@
 # Agent Instructions
 
+**Codex 提示词名称：** Project-Safe Codex Workflow Guardrails
+
+**Codex 提示词描述：** 面向 Windows 本地开发环境的 Codex 项目协作规范，用于约束代理在需求澄清、6A 工作流、计划执行、Git 同步、QA、发布和环境选择中的行为，重点防止误覆盖旧项目、错误提交、跳过验证或使用错误 Python/GPU 环境。
+
 本文件用于约束以后在本仓库中工作的 AI 编码代理。目标是让每次开发、提交和同步都更稳，避免误覆盖旧项目或把错误目录推到 GitHub。
 
 ## 最高原则

@@ -1,0 +1,14 @@
+node_modules/
+dist/
+.superpowers/
+vite-dev.log
+vite-dev.pid
+*.tsbuildinfo
+vite.config.js
+vite.config.d.ts
+coverage/
+.DS_Store
+Thumbs.db
+*.log
+.env
+.env.*
